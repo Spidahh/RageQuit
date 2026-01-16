@@ -1,6 +1,6 @@
 # Dependencies
 node_modules/
-package-lock.json
+# Keep package-lock.json for Railway to pin exact versions
 pnpm-lock.yaml
 .pnpm-store/
 

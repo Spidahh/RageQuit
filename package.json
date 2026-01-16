@@ -12,11 +12,12 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@supabase/supabase-js": "2.47.10",
-    "colyseus": "0.16.5",
     "@colyseus/core": "0.16.24",
+    "@colyseus/redis-presence": "^0.16.4",
     "@colyseus/schema": "2.0.35",
     "@colyseus/ws-transport": "0.16.5",
+    "@supabase/supabase-js": "2.47.10",
+    "colyseus": "0.16.5",
     "compression": "1.7.5",
     "cors": "2.8.5",
     "express": "4.21.2",

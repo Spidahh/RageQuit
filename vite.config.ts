@@ -37,7 +37,6 @@ export default defineConfig({
             output: {
                 manualChunks: {
                     three: ['three'],
-                    colyseus: ['colyseus.js'],
                     supabase: ['@supabase/supabase-js']
                 }
             }

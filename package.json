@@ -1,41 +1,37 @@
 {
-	"name": "ragequit-game",
-	"version": "13.1.0",
-	"type": "module",
-	"dependencies": {
-		"@colyseus/schema": "2.0.36",
-		"@colyseus/ws-transport": "^0.16.5",
-		"@supabase/supabase-js": "2.89.0",
-		"colyseus": "0.16.5",
-		"colyseus.js": "0.16.22",
-		"compression": "1.7.4",
-		"cors": "2.8.5",
-		"express": "4.21.2",
-		"three": "0.182.0",
-		"winston": "3.17.0",
-		"ws": "8.18.0"
-	},
-	"devDependencies": {
-		"@types/compression": "^1.8.1",
-		"@types/cors": "^2.8.19",
-		"@types/debug": "^4.1.12",
-		"@types/express": "5.0.0",
-		"@types/node": "22.10.5",
-		"@types/three": "0.182.0",
-		"concurrently": "9.1.2",
-		"nodemon": "3.1.9",
-		"ts-node": "10.9.2",
-		"typescript": "5.9.3",
-		"vite": "7.3.1",
-		"vite-plugin-compression": "0.5.1"
-	},
-	"scripts": {
-		"dev": "concurrently \"pnpm run dev:client\" \"pnpm run dev:server\"",
-		"dev:client": "vite",
-		"dev:server": "nodemon src/server/index.ts",
-		"build": "tsc && vite build",
-		"build:server": "tsc --project tsconfig.server.json",
-		"start:server": "node dist/server/index.js",
-		"lint": "tsc --noEmit"
-	}
+  "name": "ragequit-game",
+  "version": "13.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"pnpm run dev:client\" \"pnpm run dev:server\"",
+    "dev:client": "vite",
+    "dev:server": "tsx watch src/server/index.ts",
+    "build": "vite build",
+    "build:server": "tsc --project tsconfig.server.json",
+    "start:server": "node dist/server/index.js",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.47.10",
+    "colyseus": "0.16.5",
+    "@colyseus/schema": "2.0.35",
+    "@colyseus/ws-transport": "0.16.5",
+    "compression": "1.7.5",
+    "cors": "2.8.5",
+    "express": "4.21.2",
+    "three": "0.170.0",
+    "ws": "8.18.0"
+  },
+  "devDependencies": {
+    "@types/compression": "1.7.5",
+    "@types/cors": "2.8.17",
+    "@types/express": "5.0.0",
+    "@types/node": "22.10.5",
+    "@types/three": "0.170.0",
+    "concurrently": "9.1.2",
+    "tsx": "4.19.2",
+    "typescript": "5.7.2",
+    "vite": "6.0.7",
+    "vite-plugin-compression": "0.5.1"
+  }
 }

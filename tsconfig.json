@@ -4,10 +4,14 @@
         "module": "ESNext",
         "moduleResolution": "bundler",
         "strict": true,
-        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "noEmit": true,
         "baseUrl": ".",
         "paths": {
             "@/*": [
@@ -25,11 +29,10 @@
         }
     },
     "include": [
-        "src"
+        "src/**/*"
     ],
-    "references": [
-        {
-            "path": "./tsconfig.node.json"
-        }
+    "exclude": [
+        "node_modules",
+        "dist"
     ]
 }

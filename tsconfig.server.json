@@ -1,17 +1,37 @@
 {
-    "extends": "./tsconfig.json",
     "compilerOptions": {
-        "module": "CommonJS",
-        "moduleResolution": "node",
-        "outDir": "dist/server",
-        "noEmit": false,
-        "esModuleInterop": true,
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "strict": true,
         "skipLibCheck": true,
         "experimentalDecorators": true,
-        "emitDecoratorMetadata": true
+        "emitDecoratorMetadata": true,
+        "esModuleInterop": true,
+        "outDir": "dist/server",
+        "rootDir": ".",
+        "resolveJsonModule": true,
+        "declaration": false,
+        "noEmit": false,
+        "baseUrl": ".",
+        "paths": {
+            "@/*": [
+                "src/*"
+            ],
+            "@server/*": [
+                "src/server/*"
+            ],
+            "@shared/*": [
+                "src/shared/*"
+            ]
+        }
     },
     "include": [
         "src/server/**/*",
         "src/shared/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
     ]
 }

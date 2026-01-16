@@ -1,0 +1,38 @@
+# Railway Ignore File - Excludes non-essential files from deployment
+
+# Raw assets (too large for deploy)
+../05_RAW_ASSETS_ARCHIVE/
+
+# Documentation (not needed at runtime)
+../01_Master_Bible/
+../03_Tech_Reference_Manuals/
+../.agent/
+
+# Local development files
+_local/
+*.log
+*.txt
+server_err.txt
+server_out.txt
+tsc_error.log
+
+# Test files
+tests/
+coverage/
+*.test.ts
+*.spec.ts
+
+# Documentation in project root
+*.md
+!README.md
+
+# Editor/IDE
+.vscode/
+.idea/
+*.swp
+
+# Supabase local config
+supabase/
+
+# Scripts not needed at runtime
+scripts/

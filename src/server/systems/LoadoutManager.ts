@@ -1,4 +1,4 @@
-import { supabase } from '../services/SupabaseService';
+import { supabase } from '../services/SupabaseService.js';
 
 interface Loadout {
     id: string;

@@ -1,7 +1,7 @@
 import { Room, Client } from 'colyseus';
-import { GameState, PlayerState } from '../schemas/GameState';
-import { AbilityLoader } from '../systems/AbilityLoader';
-import { GAME_CONSTANTS } from '../../shared/constants/GameConstants';
+import { GameState, PlayerState } from '../schemas/GameState.js';
+import { AbilityLoader } from '../systems/AbilityLoader.js';
+import { GAME_CONSTANTS } from '../../shared/constants/GameConstants.js';
 
 export class GameRoom extends Room<GameState> {
     maxClients = GAME_CONSTANTS.MAX_PLAYERS_PER_ROOM;

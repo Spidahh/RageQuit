@@ -1,4 +1,4 @@
-import { supabase } from '../services/SupabaseService';
+import { supabase } from '../services/SupabaseService.js';
 
 interface AbilityData {
     id: string;

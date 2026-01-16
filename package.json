@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@colyseus/core": "0.16.24",
+    "@colyseus/redis-driver": "^0.16.1",
     "@colyseus/redis-presence": "^0.16.4",
     "@colyseus/schema": "2.0.35",
     "@colyseus/ws-transport": "0.16.5",

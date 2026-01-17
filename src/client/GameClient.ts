@@ -197,7 +197,7 @@ export class GameClient {
 
                     if (!player.isAlive) {
                         console.log("💀 You are dead. Respawning...");
-                        // Show simple respawn text? or UI overlay
+                        this.ui.showDeathScreen();
                     }
                 }
             });
@@ -232,8 +232,13 @@ export class GameClient {
             const pos = new THREE.Vector3(message.x, 1, message.z);
 
             let vfxType: 'FIREBALL' | 'ICE_SHARD' | 'GENERIC' = 'GENERIC';
-            if (message.abilityId && message.abilityId.includes('FIRE')) vfxType = 'FIREBALL';
-            if (message.abilityId && message.abilityId.includes('ICE')) vfxType = 'ICE_SHARD';
+
+            // Map Ability ID to VFX Type
+            if (message.abilityId) {
+                const id = message.abilityId.toUpperCase();
+                if (id.includes('FIRE')) vfxType = 'FIREBALL';
+                else if (id.includes('ICE') || id.includes('FROST')) vfxType = 'ICE_SHARD';
+            }
 
             this.vfx.spawnEffect(vfxType, pos);
         });

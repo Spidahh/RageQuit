@@ -89,6 +89,25 @@ export class GameUI {
         if (this.staminaBar) this.staminaBar.style.width = `${(stamina / maxStamina) * 100}%`;
     }
 
+    public showDeathScreen() {
+        if (document.getElementById('death-overlay')) return;
+
+        const deathOverlay = document.createElement('div');
+        deathOverlay.id = 'death-overlay';
+        deathOverlay.innerHTML = `
+            <div class="death-content">
+                <h1>YOU DIED</h1>
+                <p>RESPAWNING...</p>
+            </div>
+        `;
+        this.container.appendChild(deathOverlay);
+
+        // Auto-remove after 5s (approx respawn time)
+        setTimeout(() => {
+            deathOverlay.remove();
+        }, 5000);
+    }
+
     private createStyles() {
         const style = document.createElement('style');
         style.innerHTML = `
@@ -189,6 +208,39 @@ export class GameUI {
                 top: 50%; left: 50%;
                 transform: translate(-50%, -50%);
                 opacity: 0.8;
+            }
+                opacity: 0.8;
+            }
+
+            /* DEATH SCREEN */
+            #death-overlay {
+                position: absolute;
+                top: 0; left: 0;
+                width: 100vw; height: 100vh;
+                background: rgba(0, 0, 0, 0.8);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                z-index: 2000;
+                animation: fadeIn 2s;
+            }
+            .death-content {
+                text-align: center;
+                color: #b00;
+            }
+            .death-content h1 {
+                font-size: 5rem;
+                margin: 0;
+                text-shadow: 0 0 20px #f00;
+            }
+            .death-content p {
+                color: #fff;
+                font-size: 1.5rem;
+                margin-top: 1rem;
+            }
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
             }
         `;
         document.head.appendChild(style);

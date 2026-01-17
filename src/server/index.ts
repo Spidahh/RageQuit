@@ -34,7 +34,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Serve static files from dist/client (relative to dist/server/index.js)
-const clientDistPath = path.join(__dirname, '..', 'client');
+const clientDistPath = path.join(__dirname, '../../..', 'client');
 app.use(express.static(clientDistPath));
 
 // Fallback to index.html for SPA routing

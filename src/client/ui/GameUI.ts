@@ -1,4 +1,5 @@
 import { ASSET_PATHS } from '../../shared/constants/AssetPaths';
+import { SoundManager } from '../audio/SoundManager';
 
 export class GameUI {
     private container: HTMLElement;
@@ -37,11 +38,13 @@ export class GameUI {
         const input = document.getElementById('username-input') as HTMLInputElement;
 
         const handleJoin = () => {
+            SoundManager.getInstance().playSFX('UI_CLICK'); // Click Sound
             const name = input.value.trim() || 'Anon_Warrior';
             onJoin(name);
         };
 
         btn?.addEventListener('click', handleJoin);
+        btn?.addEventListener('mouseenter', () => SoundManager.getInstance().playSFX('UI_HOVER')); // Hover Sound
         input?.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') handleJoin();
         });
@@ -209,8 +212,7 @@ export class GameUI {
                 transform: translate(-50%, -50%);
                 opacity: 0.8;
             }
-                opacity: 0.8;
-            }
+
 
             /* DEATH SCREEN */
             #death-overlay {

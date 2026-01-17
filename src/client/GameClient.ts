@@ -5,6 +5,7 @@ import { Client, Room } from 'colyseus.js';
 import { ASSET_PATHS } from '../shared/constants/AssetPaths';
 import { GameUI } from './ui/GameUI';
 import { VFXSystem } from './rendering/VFXSystem';
+import { SoundManager } from './audio/SoundManager'; // Verify import
 
 export class GameClient {
     private scene!: THREE.Scene;
@@ -80,6 +81,10 @@ export class GameClient {
         // Initialize VFX
         this.vfx = new VFXSystem(this.scene);
         await this.vfx.preload();
+
+        // Audio Init
+        await SoundManager.getInstance().preload();
+        SoundManager.getInstance().playMusic(ASSET_PATHS.AUDIO.MUSIC.ARENA);
 
         // Renderer Initialization
         await this.initRenderer(canvas);
@@ -241,6 +246,10 @@ export class GameClient {
             }
 
             this.vfx.spawnEffect(vfxType, pos);
+
+            // Play SFX (using generic click for now as placeholder, or ideally a dedicated cast sound)
+            // TODO: Map Ability to SFX in AssetPaths
+            // SoundManager.getInstance().playSFXOneShot(ASSET_PATHS.AUDIO.SFX.UI_CLICK); 
         });
     }
 

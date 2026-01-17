@@ -4,8 +4,7 @@
 // CDN paths for all game assets (lowercase, Supabase Storage)
 
 // Use process.env for Node.js or hardcoded fallback
-const CDN_BASE = process.env.VITE_ASSET_CDN_URL ||
-    'https://vgtyecaegcjhewkuusal.supabase.co/storage/v1/object/public/ragequit-assets';
+const CDN_BASE = 'https://vgtyecaegcjhewkuusal.supabase.co/storage/v1/object/public/ragequit-assets';
 
 export const ASSET_PATHS = {
     // Characters

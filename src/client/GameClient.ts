@@ -115,8 +115,16 @@ export class GameClient {
 
     private async setupColyseus() {
         console.log('🔌 Connecting to Colyseus...');
-        const url = import.meta.env.VITE_COLYSEUS_URL || 'ws://localhost:2567';
+        // Use WSS for production, WS for local. Auto-detect logic or hardcode.
+        // Easiest stable fix: Check protocol.
+        const protocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+        const host = window.location.hostname === 'localhost' ? 'localhost:2567' : window.location.host;
+        const url = `${protocol}://${host}`;
 
+        // For Railway, we need to be careful. The colyseus server is on the SAME URL as the client (since we serve static).
+        // So window.location.host is correct.
+
+        console.log('Connecting to:', url);
         const client = new Client(url);
 
         try {

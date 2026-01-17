@@ -12,6 +12,7 @@ export class StatusEffect extends Schema {
 export class PlayerState extends Schema {
     @type('string') sessionId: string = '';
     @type('string') username: string = 'Guest';
+    @type('boolean') isBot: boolean = false;
 
     // Position
     @type('number') x: number = 0;

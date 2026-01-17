@@ -37,6 +37,9 @@ export class GameRoom extends Room<GameState> {
         this.onMessage('ready', (client) => this.handlePlayerReady(client));
 
         console.log(`✅ GameRoom created (${this.state.gameMode})`);
+
+        // Spawn Bots if 5v5 or ffa
+        this.spawnBots(2);
     }
 
     onJoin(client: Client, options: any) {
@@ -143,6 +146,56 @@ export class GameRoom extends Room<GameState> {
                 }
             }
         });
+
+
+        // Simple Bot AI (Run towards nearest alive player)
+        this.state.players.forEach((bot, botId) => {
+            if (!bot.isBot || !bot.isAlive) return;
+
+            let nearestPlayer: PlayerState | null = null;
+            let minDist = Infinity;
+
+            this.state.players.forEach((target, targetId) => {
+                if (target.isBot || !target.isAlive) return;
+
+                const dist = Math.sqrt(
+                    Math.pow(target.x - bot.x, 2) +
+                    Math.pow(target.z - bot.z, 2)
+                );
+
+                if (dist < minDist) {
+                    minDist = dist;
+                    nearestPlayer = target;
+                }
+            });
+
+            if (nearestPlayer && minDist > 1.5) { // Don't hug
+                // Move towards
+                const speed = 4 * (deltaTime / 1000);
+                const dx = (nearestPlayer.x - bot.x) / minDist;
+                const dz = (nearestPlayer.z - bot.z) / minDist;
+
+                bot.x += dx * speed;
+                bot.z += dz * speed;
+                bot.rotationY = Math.atan2(dx, dz);
+            }
+        });
+    }
+
+    private spawnBots(count: number) {
+        for (let i = 0; i < count; i++) {
+            const bot = new PlayerState();
+            bot.sessionId = `BOT_${Math.random().toString(36).substr(2, 9)}`;
+            bot.username = `Mutant_${i + 1}`;
+            bot.isBot = true;
+            bot.teamSide = 'cobalt'; // Bots are Cobalt for now
+            bot.teamColor = '#4169E1';
+
+            bot.x = (Math.random() - 0.5) * 10;
+            bot.z = (Math.random() - 0.5) * 10;
+
+            this.state.players.set(bot.sessionId, bot);
+        }
     }
 
     private respawnPlayer(player: PlayerState) {

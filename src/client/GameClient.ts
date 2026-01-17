@@ -4,6 +4,7 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { Client, Room } from 'colyseus.js';
 import { ASSET_PATHS } from '../shared/constants/AssetPaths';
 import { GameUI } from './ui/GameUI';
+import { VFXSystem } from './rendering/VFXSystem';
 
 export class GameClient {
     private scene!: THREE.Scene;
@@ -12,6 +13,8 @@ export class GameClient {
     private room?: Room;
     private players = new Map<string, THREE.Object3D>();
     private ui: GameUI;
+    private vfx!: VFXSystem;
+
 
     // Asset loaders
     private fbxLoader = new FBXLoader();
@@ -70,8 +73,13 @@ export class GameClient {
         this.scene.add(ground);
 
         // Grid Helper
+        // Grid Helper
         const grid = new THREE.GridHelper(100, 100, 0x444444, 0x111111);
         this.scene.add(grid);
+
+        // Initialize VFX
+        this.vfx = new VFXSystem(this.scene);
+        await this.vfx.preload();
 
         // Renderer Initialization
         await this.initRenderer(canvas);
@@ -142,9 +150,20 @@ export class GameClient {
             console.log('👤 Player joined:', sessionId);
 
             // Visual placeholder
-            const geometry = new THREE.CapsuleGeometry(0.5, 1.8, 4, 8);
-            const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-            const mesh = new THREE.Mesh(geometry, material);
+            let mesh: THREE.Object3D;
+
+            if (player.isBot) {
+                // Bot (Blue Capsule)
+                const geometry = new THREE.CapsuleGeometry(0.6, 2.0, 4, 8);
+                const material = new THREE.MeshStandardMaterial({ color: 0x4169E1 }); // Cobalt
+                mesh = new THREE.Mesh(geometry, material);
+            } else {
+                // Player (Red Capsule)
+                const geometry = new THREE.CapsuleGeometry(0.5, 1.8, 4, 8);
+                const material = new THREE.MeshStandardMaterial({ color: 0xff0000 }); // Crimson
+                mesh = new THREE.Mesh(geometry, material);
+            }
+
             mesh.position.set(player.x, player.y + 0.9, player.z);
             mesh.castShadow = true;
 
@@ -153,8 +172,31 @@ export class GameClient {
 
             // Listen for updates
             player.onChange(() => {
-                mesh.position.set(player.x, player.y + 0.9, player.z);
+                // Interpolation Target
+                if (!mesh.userData.targetPos) mesh.userData.targetPos = new THREE.Vector3();
+                mesh.userData.targetPos.set(player.x, player.y + 0.9, player.z);
+
+                // Update Rotation
+                if (player.rotationY) mesh.rotation.y = player.rotationY;
+
+                // If this is ME, update HUD
+                if (sessionId === this.room?.sessionId) {
+                    this.ui.updateHUD(
+                        player.hp, player.maxHp,
+                        player.mana, player.maxMana,
+                        player.stamina, player.maxStamina
+                    );
+                }
             });
+
+            // Initial HUD Update for ME
+            if (sessionId === this.room?.sessionId) {
+                this.ui.updateHUD(
+                    player.hp, player.maxHp,
+                    player.mana, player.maxMana,
+                    player.stamina, player.maxStamina
+                );
+            }
         });
 
         this.room.state.players.onRemove((player: any, sessionId: string) => {
@@ -169,7 +211,15 @@ export class GameClient {
         // Handle ability effects (Visuals only for now)
         this.room.onMessage('ability_cast', (message: any) => {
             console.log('✨ Ability cast:', message);
-            // TODO: Trigger VFX
+
+            // message: { casterId, abilityId, x, z, ... }
+            const pos = new THREE.Vector3(message.x, 1, message.z);
+
+            let vfxType: 'FIREBALL' | 'ICE_SHARD' | 'GENERIC' = 'GENERIC';
+            if (message.abilityId && message.abilityId.includes('FIRE')) vfxType = 'FIREBALL';
+            if (message.abilityId && message.abilityId.includes('ICE')) vfxType = 'ICE_SHARD';
+
+            this.vfx.spawnEffect(vfxType, pos);
         });
     }
 
@@ -208,18 +258,18 @@ export class GameClient {
     private animate() {
         requestAnimationFrame(this.animate.bind(this));
 
+        const dt = 0.016; // Fixed step for now
+        if (this.vfx) this.vfx.update(dt);
+
+        // Interpolate other players
+        this.players.forEach((mesh, id) => {
+            if (id !== this.room?.sessionId && mesh.userData.targetPos) {
+                mesh.position.lerp(mesh.userData.targetPos, 0.1);
+            }
+        });
+
         if (this.renderer && this.scene && this.camera) {
             this.renderer.render(this.scene, this.camera);
-        }
-
-        // Mock HUD update for now (until we have real local player state)
-        // Ideally this comes from this.room.state.players.get(this.room.sessionId)
-        if (this.room && this.room.sessionId) {
-            // const me = this.room.state.players.get(this.room.sessionId);
-            // if (me) this.ui.updateHUD(me.health, me.maxHealth, ...);
-
-            // Placeholder static update to prove connection
-            this.ui.updateHUD(100, 100, 100, 100, 100, 100);
         }
     }
 

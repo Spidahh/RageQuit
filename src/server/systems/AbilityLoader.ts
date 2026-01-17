@@ -8,6 +8,7 @@ interface AbilityData {
     mana_cost: number;
     stamina_cost: number;
     cooldown: number;
+    range?: number; // Optional range override
     effects: any[];
 }
 

@@ -1,6 +1,7 @@
 import { Room, Client } from 'colyseus';
 import { GameState, PlayerState } from '../schemas/GameState.js';
 import { AbilityLoader } from '../systems/AbilityLoader.js';
+import { AbilityExecutor } from '../systems/AbilityExecutor.js'; // Import Executor
 import { GAME_CONSTANTS } from '../../shared/constants/GameConstants.js';
 
 export class GameRoom extends Room<GameState> {
@@ -266,6 +267,24 @@ export class GameRoom extends Room<GameState> {
         });
 
         console.log(`⚔️ ${player.username} used ability: ${data.abilityId}`);
+
+        // EXECUTE COMBAT LOGIC (IMMEDIATE HIT FOR NOW)
+        // In real game, this might be delayed by projectile travel time or anim event
+        if (data.targetId) {
+            const target = this.state.players.get(data.targetId);
+            if (target && target.isAlive) {
+                // Check Range (Simple verification)
+                const dist = Math.sqrt(
+                    Math.pow(target.x - player.x, 2) +
+                    Math.pow(target.z - player.z, 2)
+                );
+
+                // Allow some leeway + ability range
+                if (dist <= (ability.range || 5) + 1.0) {
+                    AbilityExecutor.execute(player, target, ability);
+                }
+            }
+        }
     }
 
     private handleStanceSwitch(client: Client, data: { stance: 'melee' | 'bow' | 'magic' }) {

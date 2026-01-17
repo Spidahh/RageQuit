@@ -179,6 +179,14 @@ export class GameClient {
                 // Update Rotation
                 if (player.rotationY) mesh.rotation.y = player.rotationY;
 
+                // Handle Death/Respawn Visibility
+                if (player.isAlive) {
+                    mesh.visible = true;
+                } else {
+                    mesh.visible = false;
+                    // TODO: Play death particle/sound
+                }
+
                 // If this is ME, update HUD
                 if (sessionId === this.room?.sessionId) {
                     this.ui.updateHUD(
@@ -186,8 +194,16 @@ export class GameClient {
                         player.mana, player.maxMana,
                         player.stamina, player.maxStamina
                     );
+
+                    if (!player.isAlive) {
+                        console.log("💀 You are dead. Respawning...");
+                        // Show simple respawn text? or UI overlay
+                    }
                 }
             });
+
+            // Initial Death Check
+            mesh.visible = player.isAlive;
 
             // Initial HUD Update for ME
             if (sessionId === this.room?.sessionId) {
